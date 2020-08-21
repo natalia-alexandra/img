@@ -1,7 +1,7 @@
 const route = require("express").Router()
 const {
     getImgFiles, getImgFile, postImgFile, putImgFile, deleteImgFile
-} = require("../controllers/fileController")
+} = require("../controllers/imgFileController")
 
 route.get("/", getImgFiles)
 route.get("/:id", getImgFile)
