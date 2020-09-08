@@ -1,4 +1,5 @@
-const ImgFile = require("../models/imgFileSchema")
+const ImgFile = require("../models/imgFileSchema");
+const fs = require("fs");
 
 // get / read
 // get all images
@@ -25,9 +26,14 @@ exports.getImgFile = async (req, res, next) => {
 }
 
 // post / create
-exports.postImgFile = async(req, res, next) => {
+exports.postImgFile = async (req, res, next) => {
     try {
-        const image = new ImgFile(req.body)
+        const image = new ImgFile({
+            originName: req.file.originalname,
+            uploadName: req.file.filename,
+            imgPath:  "/uploads/images/"+req.file.filename,
+            mimeType: req.file.mimetype
+        })
         await image.save()
         res.json({success: true,image: image})
     } catch (err) {
@@ -37,11 +43,28 @@ exports.postImgFile = async(req, res, next) => {
 
 // put / update
 exports.putImgFile = async (req, res, next) => {
-    const { id } = req.params
-    const image = req.body
+    const { id, filename } = req.params
+    // delete old image from upload folder
+    const filePath = __dirname + "/../client/public/uploads/images/" + filename
+
+    fs.unlink(filePath, (err) => {
+        if (err) throw err;
+        console.log(`file was deleted`);
+    });
+
     try {
-        const updateImg = await ImgFile.findByIdAndUpdate(id, image, {new:true})
-        if (!image) throw res.status(404)
+        const image = {
+            originName: req.file.originalname,
+            uploadName: req.file.filename,
+            imgPath: "/uploads/images/" + req.file.filename,
+            mimeType: req.file.mimetype
+        }
+
+        const updateImg = await ImgFile.findByIdAndUpdate(id, image, { new: true })
+        // const updateImg = await ImgFile.update({ _id: id }, image, { new: true })
+        await updateImg.save()
+
+        if (!updateImg) throw res.status(404)
         res.json({success: true, image: updateImg})
     } catch (err) {
         next(err)
@@ -50,10 +73,18 @@ exports.putImgFile = async (req, res, next) => {
 
 // delete
 exports.deleteImgFile = async (req, res, next) => {
-    const {id} = req.params
+    const { id, filename } = req.params
+    const filePath = __dirname + "/../client/public/uploads/images/" + filename
+
+    // delete image from database
     try {
         const image = await ImgFile.findByIdAndDelete(id)
         if (!image) throw res.status(404)
+         // delete image from folder
+         fs.unlink(filePath, (err) => {
+            if (err) throw err;
+            console.log(`file was deleted`);
+         });
         res.json({ success: true, image: image })
     } catch (err) {
         next(err)
