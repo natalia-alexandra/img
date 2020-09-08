@@ -1,8 +1,7 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 
 export default function DeleteImg(props) {
-    console.log("props:", props)
-    console.log(`http://localhost:5000/images/${props.imgId}/${props.imgUploadName}`)
+    // console.log(`http://localhost:5000/images/${props.imgId}/${props.imgUploadName}`)
 
     const [isdeleted, setIsdeleted] = useState(false)
     const [msg, setMsg] = useState("")

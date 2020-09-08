@@ -13,8 +13,6 @@ export default function UploadImg() {
     const [image, setImage] = useState(null)
     // "https://cdn.pixabay.com/photo/2015/05/31/12/12/coffee-791439__340.jpg"
 
-    console.log("image:", image)
-
     return (
         <div>
             <FilePond

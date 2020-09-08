@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import DeleteImg from './DeleteImg'
 import UpdateImg from './UpdateImg';
+import AddLikes from './AddLikes';
 
 
 export default function GetImages() {
@@ -24,14 +25,16 @@ export default function GetImages() {
             <li key={i}>
                 <p>origin name: {img.originName}</p>
                 <p>mime type: {img.mimeType}</p>
+                <p>Likes:{img.likes} </p>
                 <img src={img.imgPath} alt="image" width="200" />
                 <DeleteImg imgId={img._id} imgUploadName={img.uploadName} />
                 <UpdateImg imgId={img._id} imgUploadName={img.uploadName} />
+                <AddLikes imgId={img._id} />
             </li>
         )
     })
 
-    // console.log("images:", images)
+    console.log("images:", images)
 
     return (
         <div>
